@@ -1,4 +1,4 @@
-const {vendorModel} = require("../models/index");
+const {vendorModel,foodModel} = require("../models/index");
 const passwordHelper = require("../utils/passwordHelper");
 const tokenHelper = require("../utils/tokenHelper");
 const vendorServices = require("../services/vendors.service");
@@ -133,6 +133,78 @@ exports.updateService = async (req,res) => {
 
         return res.json({
             "msg":'2 internal server error'
+        })
+    }
+}
+
+exports.addFood = async (req,res) => {
+
+    try {
+      
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        if(vendor){
+
+            const food = {
+                vendorId:vendor._id,
+                name:req.body.name,
+                price:req.body.price,
+                description:req.body.description,
+                foodType:req.body.foodType,
+                cookingTime:req.body.cookingTime,
+                rating:req.body.rating,
+                images:req.body.images
+            }
+            
+            const resposne = await foodModel.create(food);
+            vendor.food = vendor.foods.push(resposne);
+            await vendor.save();
+
+            return res.json({
+                "msg":resposne
+            })
+
+        }
+        else{
+
+            throw "Vendor Invalid"
+        }
+        
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
+        })
+    }
+}
+
+exports.getFood = async (req,res) => {
+
+    try {
+      
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        if(vendor){
+
+            const resposne = await foodModel.find({vendorId:vendor._id})
+            return res.json({
+                "msg":resposne
+            })
+
+        }
+        else{
+
+            throw "Vendor Invalid"
+        }
+        
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
         })
     }
 }

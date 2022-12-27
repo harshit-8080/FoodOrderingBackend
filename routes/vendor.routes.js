@@ -12,4 +12,8 @@ VendorRouter.patch("/profile", auth, vendorController.updateProfile);
 
 VendorRouter.patch("/service", auth, vendorController.updateService);
 
+VendorRouter.post("/food", auth, vendorController.addFood);
+
+VendorRouter.get("/foods", auth, vendorController.getFood);
+
 module.exports = VendorRouter;

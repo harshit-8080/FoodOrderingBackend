@@ -24,5 +24,6 @@ mongoose.connect(config.MONGO_URI).then((result) => {
 
 app.listen(3000,() => {
 
+    console.clear();
     console.log("server started at 3000");
 })

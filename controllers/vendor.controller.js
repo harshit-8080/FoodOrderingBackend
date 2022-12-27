@@ -75,6 +75,25 @@ exports.updateProfile = async (req,res) => {
 
     try {
         
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        if(vendor){
+            vendor.name = req.body.name || vendor.phone,
+            vendor.address = req.body.address || vendor.phone,
+            vendor.phone = req.body.phone || vendor.phone,
+            vendor.foodType = req.body.foodType || vendor.phone
+
+            const resposne = await vendor.save();
+
+            return res.json({
+                "msg":resposne
+            })
+
+        }
+        else{
+
+            throw "Vendor email Invalid"
+        }
+
        
     } catch (error) {
         
@@ -89,7 +108,23 @@ exports.updateProfile = async (req,res) => {
 exports.updateService = async (req,res) => {
 
     try {
-        
+      
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        if(vendor){
+
+            vendor.serviceAvailable = !vendor.serviceAvailable
+
+            const resposne = await vendor.save();
+
+            return res.json({
+                "msg":resposne
+            })
+
+        }
+        else{
+
+            throw "Vendor email Invalid"
+        }
         
 
     } catch (error) {

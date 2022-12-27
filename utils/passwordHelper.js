@@ -13,3 +13,10 @@ exports.hashPassword = (password,salt) => {
     return hashedPassword;
 
 } 
+
+exports.decodePassword = (plainPassword,hashedPassword) => {
+
+    const result = bcrypt.compareSync(plainPassword,hashedPassword);
+    return result
+
+} 

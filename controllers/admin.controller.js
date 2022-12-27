@@ -50,10 +50,40 @@ exports.createVendor = async (req, res) => {
 
 exports.getVendors = async (req, res) => {
 
-    
+    try {
+
+        const vendors = await vendorModel.find();
+        return res.json({
+            "response":vendors
+        })
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
+        })
+    }
 }
 
 exports.getVendorByID = async (req, res) => {
 
+    try {
+
+        const vendor = await vendorModel.findById(req.params.id);
+
+        return res.json({
+            "response":vendor
+        })
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
+        })
+    }
     
 }

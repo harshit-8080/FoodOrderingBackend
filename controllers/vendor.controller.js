@@ -208,3 +208,24 @@ exports.getFood = async (req,res) => {
         })
     }
 }
+
+exports.test = async (req,res) => {
+
+    try {
+      
+        console.log(req.images);
+        console.log(req.file);
+        // console.log(req);
+        return res.json({
+            "response":req.files
+        })
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
+        })
+    }
+}

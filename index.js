@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const config = require("./configs/index");
+const {PORT}  = require("./configs/sever.config");
 
 const {AdminRouter,VendorRouter} = require("./routes/index");
 
@@ -22,8 +23,9 @@ mongoose.connect(config.MONGO_URI).then((result) => {
 })
 
 
-app.listen(3000,() => {
+app.listen(PORT,() => {
 
     console.clear();
-    console.log("server started at 3000");
+    console.log(`app listen at ${PORT}`);
+    
 })

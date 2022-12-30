@@ -8,7 +8,8 @@ const { AdminRouter,
         ShoppingRouter, 
         UserRouter, 
         OrderRouter,
-        CartRouter 
+        CartRouter,
+        TransactionRouter 
     } = require("./routes/index");
 
 const app = express();
@@ -30,6 +31,7 @@ const startserver = async()=> {
     app.use("/user",UserRouter);
     app.use("/order",OrderRouter);
     app.use("/cart", CartRouter)
+    app.use("/transaction",TransactionRouter);
 
 
     app.listen(PORT,() => {

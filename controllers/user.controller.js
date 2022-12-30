@@ -129,7 +129,6 @@ exports.getAllUsers = async (req, res) => {
     }
 }
 
-
 exports.verifyUser = async (req, res) => {
 
     try {

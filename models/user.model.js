@@ -42,7 +42,11 @@ const userSchema = new Schema ({
     salt:{
         type:String,
         required:true
-    }
+    },
+    orders:[{
+        type:mongoose.SchemaTypes.ObjectId,
+        ref:"Order"
+    }]
 
 },{
     toJSON:{
@@ -51,7 +55,9 @@ const userSchema = new Schema ({
             delete ret.salt,
             delete ret.createdAt,
             delete ret.updatedAt,
-            delete ret.__v
+            delete ret.__v,
+            delete ret.otp,
+            delete ret.otp_expiry
         }
     }
 })

@@ -7,11 +7,9 @@ const TransactionRouter = express.Router();
 
 TransactionRouter.post("/payment", auth, TransactionController.createPayment);
 
-TransactionRouter.delete("/", auth, TransactionController.deleteAll); // for dev use
+// TransactionRouter.delete("/", auth, TransactionController.deleteAll); // for dev use
 
-// TransactionRouter.get("/vendors", TransactionController.getVendors);
-
-// TransactionRouter.get("/vendor/:id", TransactionController.getVendorByID);
+TransactionRouter.get("/vendor/:vendorId", TransactionController.getTransactionAmountByVendorByID);
 
 TransactionRouter.get("/:id", auth, TransactionController.getTransaction); 
 

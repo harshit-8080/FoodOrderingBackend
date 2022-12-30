@@ -209,17 +209,59 @@ exports.getFood = async (req,res) => {
     }
 }
 
-exports.test = async (req,res) => {
+exports.uploadProfile = async (req,res) => {
 
     try {
       
-        console.log(req.images);
-        console.log(req.file);
-        // console.log(req);
-        return res.json({
-            "response":req.files
-        })
+       const vendor = await vendorServices.getVendorByEmail(req.email);
+       if(vendor){
+            vendor.profilePhoto = req.file.filename;
+            await vendor.save()
+            return res.json({
+                "sucess":true,
+                "response":vendor
+            })
+       }
+       else{
+            return res.json({
+                "sucess":false,
+                "response 1":"invalid vendor"
+            })
+       }
+        
 
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.json({
+            "msg":'internal server error'
+        })
+    }
+}
+
+exports.uploadFoods = async (req,res) => {
+
+    try {
+
+        const food = await foodModel.findOne({__id:req.params.foodId});
+        if(food){
+            const foodImages = req.files.map((file)=>{
+                return file.filename
+            })
+            food.images = foodImages;
+            await food.save();
+            return res.json({
+                "sucess":true,
+                "response":food
+            })
+        }
+        else{
+             return res.json({
+                 "sucess":false,
+                 "response":"invalid Food Id"
+             })
+        }
     } catch (error) {
         
         console.log(error);

@@ -3,7 +3,7 @@ const {JWT_SECRET} = require("../configs/sever.config");
 
 exports.createToken = (email) => {
 
-    const token = jwt.sign({email}, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({email}, JWT_SECRET, { expiresIn: '2d' });
 
     return token;
 }

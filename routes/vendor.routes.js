@@ -8,7 +8,7 @@ const VendorRouter = express.Router();
 const storage = multer.diskStorage({
     destination: 'images', 
     filename: function (req, file, cb) {
-      cb(null, new Date().toISOString()+file.originalname);
+      cb(null, `${new Date().toISOString()}_profilePhoto_${file.originalname}`)
     }
   })
   
@@ -28,6 +28,8 @@ VendorRouter.post("/food", auth, vendorController.addFood);
 
 VendorRouter.get("/foods", auth, vendorController.getFood);
 
-VendorRouter.post("/test", upload.single("images"), vendorController.test);
+VendorRouter.patch("/upload/profile", auth, upload.single("image"), vendorController.uploadProfile);
+
+VendorRouter.patch("/upload/food/:foodId", auth, upload.array("images"), vendorController.uploadFoods);
 
 module.exports = VendorRouter;

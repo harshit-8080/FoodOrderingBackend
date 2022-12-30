@@ -73,3 +73,31 @@ exports.getTransaction = async (req, res) => {
         })
     }
 }
+
+exports.getTransactionAmountByVendorByID = async (req, res) => {
+
+    try {
+        
+        const transaction = await TransactionModel.find({
+            vendorId:req.params.vendorId
+        });
+
+        let totalTransactionAmount = transaction.reduce((sum,t)=>{
+             sum = sum + Number(t.amount);
+             return sum
+        },0)
+
+        // console.log(totalTransactionAmount);
+        return res.json({
+            "response":transaction,
+            totalAmount:totalTransactionAmount
+        })
+
+    } catch (error) {
+        console.log(error);
+
+        return res.json({
+            "msg":"error"
+        })
+    }
+}

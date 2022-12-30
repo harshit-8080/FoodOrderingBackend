@@ -30,6 +30,9 @@ exports.createOrder = async (req, res) => {
                 items:items,
                 orderDate:new Date(),
                 orderStatus:"waiting",
+                remarks:'',
+                deliveryID:''
+
             }
 
             const response = await OrderModel.create(order);

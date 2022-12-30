@@ -32,4 +32,12 @@ VendorRouter.patch("/upload/profile", auth, upload.single("image"), vendorContro
 
 VendorRouter.patch("/upload/food/:foodId", auth, upload.array("images"), vendorController.uploadFoods);
 
+VendorRouter.patch("/upload/food/:foodId", auth, upload.array("images"), vendorController.uploadFoods);
+
+VendorRouter.get("/orders", auth, vendorController.getOrders);
+
+VendorRouter.get("/order/:orderId", auth, vendorController.getOrder);
+
+VendorRouter.patch("/order/:orderId/process", auth, vendorController.updateOrderStatus);
+
 module.exports = VendorRouter;

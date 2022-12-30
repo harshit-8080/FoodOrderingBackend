@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const {PORT}  = require("./configs/sever.config");
 const dbConnection = require("./configs/db.config")
 
-const {AdminRouter,VendorRouter} = require("./routes/index");
+const {AdminRouter,VendorRouter, ShoppingRouter} = require("./routes/index");
 
 const app = express();
 
@@ -20,6 +20,7 @@ const startserver = async()=> {
     // using routes
     app.use("/admin",AdminRouter);
     app.use("/vendor",VendorRouter);
+    app.use("/shopping",ShoppingRouter);
 
 
     app.listen(PORT,() => {

@@ -15,7 +15,8 @@ exports.createVendor = async (req, res) => {
             password: req.body.password,
             serviceAvailable: false,
             coverImages: [],
-            rating: 0
+            rating: 0,
+            profilePhoto:req.body.profilePhoto
         }
 
         const checkVendor = await vendorModel.findOne({email:vendor.email})

@@ -14,6 +14,7 @@ const vendorSchema = new Schema({
     salt: { type: String, required: true},
     serviceAvailable: { type: Boolean},
     coverImages: { type: [String]},
+    profilePhoto:{type:String},
     rating: { type: Number},
     foods:[{
         type:mongoose.SchemaTypes.ObjectId,

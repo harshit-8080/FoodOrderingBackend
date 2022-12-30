@@ -46,6 +46,11 @@ const userSchema = new Schema ({
     orders:[{
         type:mongoose.SchemaTypes.ObjectId,
         ref:"Order"
+    }],
+    carts:[{
+
+            food:{type:Schema.Types.ObjectId, ref:"Food", required:true},
+            unit:{type:Number, required:true}
     }]
 
 },{

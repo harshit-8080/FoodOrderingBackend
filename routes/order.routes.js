@@ -8,7 +8,7 @@ OrderRouter.post("/create", auth, OrderComtroller.createOrder);
 
 OrderRouter.get("/orders", auth, OrderComtroller.getAllOrders);
 
-OrderRouter.get("/:orderId", OrderComtroller.getOrder);
+OrderRouter.get("/:orderId", auth, OrderComtroller.getOrder);
 
 
 module.exports = OrderRouter;

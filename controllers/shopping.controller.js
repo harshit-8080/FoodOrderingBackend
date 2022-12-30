@@ -31,6 +31,7 @@ exports.getVendor = async (req, res) => {
  
      }
 }
+
 exports.searchFoodInYourArea = async (req, res) => {
 
     try {

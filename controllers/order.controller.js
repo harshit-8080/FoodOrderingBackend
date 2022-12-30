@@ -9,12 +9,12 @@ exports.createOrder = async (req, res) => {
         if(user){
 
             const items = req.body.items;
-            console.log(items);
+            // console.log(items);
 
             const foods = items.map((i)=>{
                 return i.food;
             });
-            console.log(foods);
+            // console.log(foods);
 
             const result = await foodModel.find({_id:{$in:foods}});
 
@@ -81,7 +81,8 @@ exports.getOrder = async (req, res) => {
     
     try {
         
-        const order = await OrderModel.findById(req.params.orderId);
+        const order = await OrderModel.findById(req.params.orderId)
+        .populate("items.food");
 
         return res.json({
             "response":order

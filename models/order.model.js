@@ -19,6 +19,7 @@ const orderSchema = new Schema({
     vendorId: {type: String, require: true},
     orderStatus: {type: String},
     remarks: {type: String},
+    deliveryID:{type:String}
 })
 
 const Order = mongoose.model("Order", orderSchema);

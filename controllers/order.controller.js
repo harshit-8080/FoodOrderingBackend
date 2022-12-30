@@ -1,4 +1,5 @@
-const {OrderModel,userModel,foodModel} = require("../models/index");
+const {OrderModel,userModel,foodModel,TransactionModel} = require("../models/index");
+
 const userServices = require("../services/user.service");
 
 exports.createOrder = async (req, res) => {
@@ -30,11 +31,19 @@ exports.createOrder = async (req, res) => {
                 items:items,
                 orderDate:new Date(),
                 orderStatus:"waiting",
+                remarks:'',
+                deliveryID:''
+
             }
 
             const response = await OrderModel.create(order);
             user.orders.push(response);
             await user.save();
+
+            const transaction = await TransactionModel.findById(req.body.transactionId);
+            transaction.paymentStatus = "Confirmed";
+            transaction.orderId = response._id.toString();
+            await transaction.save();
 
             return res.json({
 

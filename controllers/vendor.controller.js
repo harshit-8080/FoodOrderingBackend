@@ -1,4 +1,4 @@
-const {vendorModel,foodModel} = require("../models/index");
+const {vendorModel,foodModel, OrderModel} = require("../models/index");
 const passwordHelper = require("../utils/passwordHelper");
 const tokenHelper = require("../utils/tokenHelper");
 const vendorServices = require("../services/vendors.service");
@@ -268,6 +268,107 @@ exports.uploadFoods = async (req,res) => {
 
         return res.json({
             "msg":'internal server error'
+        })
+    }
+}
+
+exports.getOrders = async(req, res) => {
+
+    try {
+        
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        
+        if(vendor){
+
+            let orders = await OrderModel.find({vendorId:vendor._id})
+            .populate("items.food");
+
+            const filterOrder = orders.map((o)=>{
+                return o.items
+            })
+
+            return res.json({
+                "response":filterOrder
+            })
+        }
+        else{
+            return res.json({
+                "response":"invalid user"
+            })
+        }
+
+
+
+    } catch (error) {
+        
+        console.log(error);
+        return res.json({
+            "msg":"interal server error"
+        })
+    }
+}
+
+exports.getOrder = async(req, res) => {
+
+    try {
+        
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        
+        if(vendor){
+
+            const order = await OrderModel.findById(req.params.orderId)
+            .populate("items.food")
+
+            return res.json({
+                "response":order
+            })
+        }
+        else{
+            return res.json({
+                "response":"invalid user"
+            })
+        }
+
+    } catch (error) {
+        
+        console.log(error);
+        return res.json({
+            "msg":"interal server error"
+        })
+    }
+}
+
+exports.updateOrderStatus = async(req, res) => {
+
+    try {
+        
+        const vendor = await vendorServices.getVendorByEmail(req.email);
+        
+        if(vendor){
+
+            const order = await OrderModel.findById(req.params.orderId)
+
+            order.orderStatus = req.body.orderStatus || order.orderStatus;
+            order.remarks = req.body.remarks || order.remarks;
+
+            await order.save();
+
+            return res.json({
+                "response":order
+            })
+        }
+        else{
+            return res.json({
+                "response":"invalid user"
+            })
+        }
+
+    } catch (error) {
+        
+
+        console.log(error);
+        return res.json({
+            "msg":"interal server error"
         })
     }
 }

@@ -221,3 +221,64 @@ exports.requestOtp = async (req, res) => {
         })
     }
 }
+
+exports.getUser = async (req, res) => {
+
+    try {
+        
+        const user  = await userModel.findOne({email:req.email})
+        .select({ "otp":0,"otp_expiry":0});
+        // .select({ "_id": 1, "firstName": 1,"email":1,"lastName":1,"verifed":1,"phone":1,"address":1});
+
+        if(user){
+            return res.json({
+                "response":user
+            })
+        }
+        else{
+            return res.json({
+                "msg":"No User Found"
+            })
+        }
+    } catch (error) {
+        
+        console.log(error);
+        return res.json({
+            "msg":"internal server error"
+        })
+    }
+}
+
+exports.updateProfile = async (req, res) => {
+
+    try {
+        
+        const user = await userServices.getUserByEmail(req.email);
+        if(user){
+
+            user.firstName = req.body.firstName || user.firstName,
+            user.lastName = req.body.lastName || user.lastName,
+            user.phone = req.body.phone || user.phone,
+            user.email = req.body.email || user.email
+            user.phone = req.body.phone || user.phone
+            user.address = req.body.address || user.address
+            
+            const response = await user.save();
+
+            return res.json({
+                "response":response
+            })
+        }
+        else{
+            return res.json({
+                "msg":"No User Found"
+            })
+        }
+    } catch (error) {
+        
+        console.log(error);
+        return res.json({
+            "msg":"internal server error"
+        })
+    }
+}

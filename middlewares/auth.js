@@ -23,7 +23,7 @@ exports.auth = async (req, res,next) => {
         console.log(error);
 
         return res.json({
-            "msg":'1 internal server error'
+            "msg":'internal server error'
         })
     }
     

@@ -16,4 +16,10 @@ UserRouter.post("/verify", auth,UserController.verifyUser);
 
 UserRouter.get("/otp", auth,UserController.requestOtp);
 
+UserRouter.get("/", auth, UserController.getUser);
+
+UserRouter.get("/:user", auth, UserController.getUser);
+
+UserRouter.patch("/update", auth, UserController.updateProfile);
+
 module.exports = UserRouter;

@@ -7,12 +7,11 @@ const CartRouter = require("./cart.routes");
 const TransactionRouter = require("./transaction.routes");
 
 module.exports = {
-    VendorRouter,
-    AdminRouter,
-    ShoppingRouter,
-    UserRouter,
-    OrderRouter,
-    CartRouter,
-    TransactionRouter
-    
-}
+  VendorRouter,
+  AdminRouter,
+  ShoppingRouter,
+  UserRouter,
+  OrderRouter,
+  CartRouter,
+  TransactionRouter,
+};

@@ -1,374 +1,297 @@
-const {vendorModel,foodModel, OrderModel} = require("../models/index");
+const { vendorModel, foodModel, OrderModel } = require("../models/index");
 const passwordHelper = require("../utils/passwordHelper");
 const tokenHelper = require("../utils/tokenHelper");
 const vendorServices = require("../services/vendors.service");
 
-
 exports.login = async (req, res) => {
+  try {
+    const vendor = {
+      email: req.body.email,
+      password: req.body.password,
+    };
 
-    try {
-        
-        const vendor = {
-            email:req.body.email,
-            password:req.body.password
-        }
-
-        const checkVendor = await vendorServices.getVendorByEmail(vendor.email);
-        if(checkVendor){
-
-            const checkPassword = passwordHelper.decodePassword(vendor.password,checkVendor.password);
-            if(checkPassword){
-
-                const token = tokenHelper.createToken(checkVendor.email);
-
-                return res.json({
-                    "msg":'Logged In',
-                    "token":token
-                })
-            }
-            else{
-                return res.json({
-                    "msg":'Password Invalid'
-                })
-            }
-        }
-        else{
-
-            return res.json({
-                "msg":'Email Invalid'
-            })
-        }
-                
-    
-    } catch (error) {
-        
-        console.log(error);
+    const checkVendor = await vendorServices.getVendorByEmail(vendor.email);
+    if (checkVendor) {
+      const checkPassword = passwordHelper.decodePassword(
+        vendor.password,
+        checkVendor.password
+      );
+      if (checkPassword) {
+        const token = tokenHelper.createToken(checkVendor.email);
 
         return res.json({
-            "msg":'internal server error'
-        })
+          msg: "Logged In",
+          token: token,
+        });
+      } else {
+        return res.json({
+          msg: "Password Invalid",
+        });
+      }
+    } else {
+      return res.json({
+        msg: "Email Invalid",
+      });
     }
+  } catch (error) {
+    console.log(error);
 
-}
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-exports.getProfile = async (req,res) => {
+exports.getProfile = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
 
-    try {
-        
-        const vendor = await vendorServices.getVendorByEmail(req.email);
+    return res.json({
+      msg: vendor,
+    });
+  } catch (error) {
+    console.log(error);
 
-        return res.json({
-            "msg":vendor
-        }) 
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    } catch (error) {
-        
-        console.log(error);
+exports.updateProfile = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
+    if (vendor) {
+      (vendor.name = req.body.name || vendor.phone),
+        (vendor.address = req.body.address || vendor.phone),
+        (vendor.phone = req.body.phone || vendor.phone),
+        (vendor.foodType = req.body.foodType || vendor.phone);
 
-        return res.json({
-            "msg":'internal server error'
-        })
+      const resposne = await vendor.save();
+
+      return res.json({
+        msg: resposne,
+      });
+    } else {
+      throw "Vendor email Invalid";
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.updateProfile = async (req,res) => {
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    try {
-        
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        if(vendor){
-            vendor.name = req.body.name || vendor.phone,
-            vendor.address = req.body.address || vendor.phone,
-            vendor.phone = req.body.phone || vendor.phone,
-            vendor.foodType = req.body.foodType || vendor.phone
+exports.updateService = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
+    if (vendor) {
+      vendor.serviceAvailable = !vendor.serviceAvailable;
 
-            const resposne = await vendor.save();
+      const resposne = await vendor.save();
 
-            return res.json({
-                "msg":resposne
-            })
-
-        }
-        else{
-
-            throw "Vendor email Invalid"
-        }
-
-       
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
+      return res.json({
+        msg: resposne,
+      });
+    } else {
+      throw "Vendor email Invalid";
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.updateService = async (req,res) => {
+    return res.json({
+      msg: "2 internal server error",
+    });
+  }
+};
 
-    try {
-      
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        if(vendor){
+exports.addFood = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
+    if (vendor) {
+      const food = {
+        vendorId: vendor._id,
+        name: req.body.name,
+        price: req.body.price,
+        description: req.body.description,
+        foodType: req.body.foodType,
+        cookingTime: req.body.cookingTime,
+        rating: req.body.rating,
+        images: req.body.images,
+      };
 
-            vendor.serviceAvailable = !vendor.serviceAvailable
+      const resposne = await foodModel.create(food);
+      vendor.food = vendor.foods.push(resposne);
+      await vendor.save();
 
-            const resposne = await vendor.save();
-
-            return res.json({
-                "msg":resposne
-            })
-
-        }
-        else{
-
-            throw "Vendor email Invalid"
-        }
-        
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'2 internal server error'
-        })
+      return res.json({
+        msg: resposne,
+      });
+    } else {
+      throw "Vendor Invalid";
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.addFood = async (req,res) => {
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    try {
-      
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        if(vendor){
-
-            const food = {
-                vendorId:vendor._id,
-                name:req.body.name,
-                price:req.body.price,
-                description:req.body.description,
-                foodType:req.body.foodType,
-                cookingTime:req.body.cookingTime,
-                rating:req.body.rating,
-                images:req.body.images
-            }
-            
-            const resposne = await foodModel.create(food);
-            vendor.food = vendor.foods.push(resposne);
-            await vendor.save();
-
-            return res.json({
-                "msg":resposne
-            })
-
-        }
-        else{
-
-            throw "Vendor Invalid"
-        }
-        
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
+exports.getFood = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
+    if (vendor) {
+      const resposne = await foodModel.find({ vendorId: vendor._id });
+      return res.json({
+        msg: resposne,
+      });
+    } else {
+      throw "Vendor Invalid";
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.getFood = async (req,res) => {
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    try {
-      
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        if(vendor){
-
-            const resposne = await foodModel.find({vendorId:vendor._id})
-            return res.json({
-                "msg":resposne
-            })
-
-        }
-        else{
-
-            throw "Vendor Invalid"
-        }
-        
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
+exports.uploadProfile = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
+    if (vendor) {
+      vendor.profilePhoto = req.file.filename;
+      await vendor.save();
+      return res.json({
+        sucess: true,
+        response: vendor,
+      });
+    } else {
+      return res.json({
+        sucess: false,
+        "response 1": "invalid vendor",
+      });
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.uploadProfile = async (req,res) => {
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    try {
-      
-       const vendor = await vendorServices.getVendorByEmail(req.email);
-       if(vendor){
-            vendor.profilePhoto = req.file.filename;
-            await vendor.save()
-            return res.json({
-                "sucess":true,
-                "response":vendor
-            })
-       }
-       else{
-            return res.json({
-                "sucess":false,
-                "response 1":"invalid vendor"
-            })
-       }
-        
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
+exports.uploadFoods = async (req, res) => {
+  try {
+    const food = await foodModel.findOne({ __id: req.params.foodId });
+    if (food) {
+      const foodImages = req.files.map((file) => {
+        return file.filename;
+      });
+      food.images = foodImages;
+      await food.save();
+      return res.json({
+        sucess: true,
+        response: food,
+      });
+    } else {
+      return res.json({
+        sucess: false,
+        response: "invalid Food Id",
+      });
     }
-}
+  } catch (error) {
+    console.log(error);
 
-exports.uploadFoods = async (req,res) => {
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
-    try {
+exports.getOrders = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
 
-        const food = await foodModel.findOne({__id:req.params.foodId});
-        if(food){
-            const foodImages = req.files.map((file)=>{
-                return file.filename
-            })
-            food.images = foodImages;
-            await food.save();
-            return res.json({
-                "sucess":true,
-                "response":food
-            })
-        }
-        else{
-             return res.json({
-                 "sucess":false,
-                 "response":"invalid Food Id"
-             })
-        }
-    } catch (error) {
-        
-        console.log(error);
+    if (vendor) {
+      let orders = await OrderModel.find({ vendorId: vendor._id }).populate(
+        "items.food"
+      );
 
-        return res.json({
-            "msg":'internal server error'
-        })
+      const filterOrder = orders.map((o) => {
+        return o.items;
+      });
+
+      return res.json({
+        response: filterOrder,
+      });
+    } else {
+      return res.json({
+        response: "invalid user",
+      });
     }
-}
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      msg: "interal server error",
+    });
+  }
+};
 
-exports.getOrders = async(req, res) => {
+exports.getOrder = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
 
-    try {
-        
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        
-        if(vendor){
+    if (vendor) {
+      const order = await OrderModel.findById(req.params.orderId).populate(
+        "items.food"
+      );
 
-            let orders = await OrderModel.find({vendorId:vendor._id})
-            .populate("items.food");
-
-            const filterOrder = orders.map((o)=>{
-                return o.items
-            })
-
-            return res.json({
-                "response":filterOrder
-            })
-        }
-        else{
-            return res.json({
-                "response":"invalid user"
-            })
-        }
-
-
-
-    } catch (error) {
-        
-        console.log(error);
-        return res.json({
-            "msg":"interal server error"
-        })
+      return res.json({
+        response: order,
+      });
+    } else {
+      return res.json({
+        response: "invalid user",
+      });
     }
-}
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      msg: "interal server error",
+    });
+  }
+};
 
-exports.getOrder = async(req, res) => {
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const vendor = await vendorServices.getVendorByEmail(req.email);
 
-    try {
-        
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        
-        if(vendor){
+    if (vendor) {
+      const order = await OrderModel.findById(req.params.orderId);
 
-            const order = await OrderModel.findById(req.params.orderId)
-            .populate("items.food")
+      order.orderStatus = req.body.orderStatus || order.orderStatus;
+      order.remarks = req.body.remarks || order.remarks;
 
-            return res.json({
-                "response":order
-            })
-        }
-        else{
-            return res.json({
-                "response":"invalid user"
-            })
-        }
+      await order.save();
 
-    } catch (error) {
-        
-        console.log(error);
-        return res.json({
-            "msg":"interal server error"
-        })
+      return res.json({
+        response: order,
+      });
+    } else {
+      return res.json({
+        response: "invalid user",
+      });
     }
-}
-
-exports.updateOrderStatus = async(req, res) => {
-
-    try {
-        
-        const vendor = await vendorServices.getVendorByEmail(req.email);
-        
-        if(vendor){
-
-            const order = await OrderModel.findById(req.params.orderId)
-
-            order.orderStatus = req.body.orderStatus || order.orderStatus;
-            order.remarks = req.body.remarks || order.remarks;
-
-            await order.save();
-
-            return res.json({
-                "response":order
-            })
-        }
-        else{
-            return res.json({
-                "response":"invalid user"
-            })
-        }
-
-    } catch (error) {
-        
-
-        console.log(error);
-        return res.json({
-            "msg":"interal server error"
-        })
-    }
-}
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      msg: "interal server error",
+    });
+  }
+};

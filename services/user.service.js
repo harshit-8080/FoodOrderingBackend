@@ -1,39 +1,29 @@
-const {userModel} = require("../models/index");
+const { userModel } = require("../models/index");
 
 exports.getUserByID = async (userId) => {
+  try {
+    const user = await userModel.findById(userId);
 
-    try {
+    return user;
+  } catch (error) {
+    console.log(error);
 
-        const user = await userModel.findById(userId);
-
-        return user;
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
-    }
-    
-}
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};
 
 exports.getUserByEmail = async (userEmail) => {
+  try {
+    const user = await userModel.findOne({ email: userEmail });
 
-    try {
+    return user;
+  } catch (error) {
+    console.log(error);
 
-        const user = await userModel.findOne({email:userEmail});
-
-        return user
-
-    } catch (error) {
-        
-        console.log(error);
-
-        return res.json({
-            "msg":'internal server error'
-        })
-    }
-    
-}
+    return res.json({
+      msg: "internal server error",
+    });
+  }
+};

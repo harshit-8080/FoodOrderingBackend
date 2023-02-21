@@ -5,9 +5,9 @@ const OrderModel = require("./order.model");
 const TransactionModel = require("./transaction.model");
 
 module.exports = {
-    vendorModel,
-    foodModel,
-    userModel,
-    OrderModel,
-    TransactionModel
-}
+  vendorModel,
+  foodModel,
+  userModel,
+  OrderModel,
+  TransactionModel,
+};

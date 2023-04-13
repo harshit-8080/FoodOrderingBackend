@@ -17,6 +17,11 @@ class OperationsService {
       country: "India",
     };
   }
+  async setMyName(name) {
+    return {
+      name,
+    };
+  }
 }
 
 module.exports = new OperationsService();

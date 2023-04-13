@@ -19,6 +19,11 @@ class OperationsController {
       city: response.city,
     };
   }
+
+  async setMyName(name) {
+    const response = await OperationsService.setMyName(name);
+    return response;
+  }
 }
 
 module.exports = new OperationsController();

@@ -74,3 +74,20 @@ const userSchema = new Schema(
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
+
+/*
+
+Relationships:
+
+orders and carts are arrays within the user schema that define relationships to other MongoDB collections. 
+
+These are examples of using Mongoose's ref option to establish relationships between documents. 
+
+They use mongoose.SchemaTypes.ObjectId to store references to documents in other collections.
+
+Specifically, 
+
+1.  orders is expected to contain references to "Order" documents, 
+2.  carts is expected to contain references to "Food" documents.
+
+*/

@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { PORT } = require("./configs/sever.config");
+const { PORT, appPasscode } = require("./configs/sever.config");
 const dbConnection = require("./configs/db.config");
+const nodemailer = require("nodemailer");
 
 const {
   AdminRouter,
@@ -31,6 +32,36 @@ const startserver = async () => {
   app.use("/order", OrderRouter);
   app.use("/cart", CartRouter);
   app.use("/transaction", TransactionRouter);
+
+  // Create a transporter object using SMTP
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "harshit.new71@gmail.com", // Your Gmail email address
+      pass: appPasscode, // Your Gmail password or App Password
+    },
+  });
+
+  const food = {
+    name: "Biryani",
+  };
+  // Email data
+  const mailOptions = {
+    from: "harshit.new71@gmail.com", // Sender email address
+    to: "harshitrajlnctcse@gmail.com", // Recipient email address
+    subject: "Your Order Booked Successfully",
+    text: `Your ${food.name} is on the way`,
+  };
+
+  app.get("/send/mail", async (req, res) => {
+    try {
+      // Send the email
+      await transporter.sendMail(mailOptions);
+      return res.json({ msg: "Mail Sent" });
+    } catch (error) {
+      return res.json({ Error: error });
+    }
+  });
 
   app.listen(PORT, () => {
     console.clear();

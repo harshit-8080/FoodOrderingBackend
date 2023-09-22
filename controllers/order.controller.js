@@ -41,12 +41,12 @@ exports.createOrder = async (req, res) => {
       user.orders.push(response);
       await user.save();
 
-      const transaction = await TransactionModel.findById(
-        req.body.transactionId
-      );
-      transaction.paymentStatus = "Confirmed";
-      transaction.orderId = response._id.toString();
-      await transaction.save();
+      // const transaction = await TransactionModel.findById(
+      //   req.body.transactionId
+      // );
+      // transaction.paymentStatus = "Confirmed";
+      // transaction.orderId = response._id.toString();
+      // await transaction.save();
 
       return res.json({
         response: response,
